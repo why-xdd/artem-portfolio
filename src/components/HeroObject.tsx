@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import {
   createBrandEnvironment,
   chromeMaterial,
@@ -60,6 +61,11 @@ export default function HeroObject({ modelUrl, className = '' }: Props) {
     const group = new THREE.Group()
     scene.add(group)
 
+    // Orbits live in their own group so they can be dropped below a bust
+    // without moving the model itself.
+    const orbitGroup = new THREE.Group()
+    group.add(orbitGroup)
+
     const disposables: Array<{ dispose: () => void }> = [env]
     let mixer: THREE.AnimationMixer | null = null
     // Satellites orbit; the main body only drifts.
@@ -72,47 +78,46 @@ export default function HeroObject({ modelUrl, className = '' }: Props) {
       spin: number
     }> = []
 
-    function buildProceduralCluster() {
+    /**
+     * Rings and satellites. Used on their own as the fallback centrepiece, and
+     * also wrapped around the avatar so the model is not left floating alone.
+     */
+    function buildOrbits(scale = 1) {
       const chrome = chromeMaterial(env)
       const graphite = graphiteMaterial(env)
       const accent = accentMaterial(env)
       disposables.push(chrome, graphite, accent)
 
-      const coreGeo = new THREE.IcosahedronGeometry(1.35, 1)
-      const core = new THREE.Mesh(coreGeo, chrome)
-      group.add(core)
-      disposables.push(coreGeo)
-
-      const shellGeo = new THREE.TorusGeometry(1.95, 0.07, 24, 160)
+      const shellGeo = new THREE.TorusGeometry(1.95 * scale, 0.07 * scale, 24, 160)
       const shell = new THREE.Mesh(shellGeo, chrome)
-      shell.rotation.x = Math.PI / 2.6
-      group.add(shell)
+      shell.rotation.x = Math.PI / 2.15
+      orbitGroup.add(shell)
       disposables.push(shellGeo)
       orbiters.push({ mesh: shell, radius: 0, speed: 0.22, phase: 0, tilt: 0, spin: 0.3 })
 
-      const shell2Geo = new THREE.TorusGeometry(2.32, 0.042, 20, 160)
+      const shell2Geo = new THREE.TorusGeometry(2.32 * scale, 0.042 * scale, 20, 160)
       const shell2 = new THREE.Mesh(shell2Geo, graphite)
-      shell2.rotation.x = Math.PI / 1.7
-      shell2.rotation.z = 0.5
-      group.add(shell2)
+      shell2.rotation.x = Math.PI / 1.9
+      shell2.rotation.z = 0.35
+      orbitGroup.add(shell2)
       disposables.push(shell2Geo)
       orbiters.push({ mesh: shell2, radius: 0, speed: -0.16, phase: 0, tilt: 0, spin: -0.22 })
 
       const satShapes = [
-        new THREE.IcosahedronGeometry(0.3, 0),
-        new THREE.TorusKnotGeometry(0.22, 0.075, 90, 14),
-        new THREE.BoxGeometry(0.42, 0.42, 0.42),
-        new THREE.OctahedronGeometry(0.34, 0),
-        new THREE.SphereGeometry(0.26, 32, 32),
+        new THREE.IcosahedronGeometry(0.3 * scale, 0),
+        new THREE.TorusKnotGeometry(0.22 * scale, 0.075 * scale, 90, 14),
+        new THREE.BoxGeometry(0.42 * scale, 0.42 * scale, 0.42 * scale),
+        new THREE.OctahedronGeometry(0.34 * scale, 0),
+        new THREE.SphereGeometry(0.26 * scale, 32, 32),
       ]
       satShapes.forEach((geo, i) => {
         disposables.push(geo)
         const mat = i === 2 ? accent : i % 2 === 0 ? chrome : graphite
         const mesh = new THREE.Mesh(geo, mat)
-        group.add(mesh)
+        orbitGroup.add(mesh)
         orbiters.push({
           mesh,
-          radius: 1.95 + (i % 3) * 0.3,
+          radius: (1.95 + (i % 3) * 0.3) * scale,
           speed: 0.18 + i * 0.045,
           phase: (i / satShapes.length) * Math.PI * 2,
           tilt: 0.35 + i * 0.22,
@@ -121,10 +126,25 @@ export default function HeroObject({ modelUrl, className = '' }: Props) {
       })
     }
 
+    /** Chrome core, only used when there is no model to sit at the centre. */
+    function buildCore() {
+      const chrome = chromeMaterial(env)
+      disposables.push(chrome)
+      const coreGeo = new THREE.IcosahedronGeometry(1.35, 1)
+      group.add(new THREE.Mesh(coreGeo, chrome))
+      disposables.push(coreGeo)
+    }
+
     let disposed = false
 
+    let draco: DRACOLoader | null = null
+
     if (modelUrl) {
-      new GLTFLoader().load(
+      // The avatar ships Draco-compressed (16.2 MB raw against 1.2 MB), so the
+      // decoder in public/draco is required to read it.
+      draco = new DRACOLoader().setDecoderPath('/draco/')
+      const loader = new GLTFLoader().setDRACOLoader(draco)
+      loader.load(
         modelUrl,
         (gltf) => {
           if (disposed) return
@@ -151,6 +171,11 @@ export default function HeroObject({ modelUrl, className = '' }: Props) {
           })
 
           group.add(model)
+          // Rings ring the base of the bust rather than crossing the face.
+          // Scale stays at 1: the portrait-shaped slot gives only ~2.6 world
+          // units of half-width, and the outer ring already sits at 2.32.
+          buildOrbits(1)
+          orbitGroup.position.y = -1.45
 
           if (gltf.animations.length && !reduce) {
             mixer = new THREE.AnimationMixer(model)
@@ -160,11 +185,15 @@ export default function HeroObject({ modelUrl, className = '' }: Props) {
         undefined,
         () => {
           // A missing or broken model must not leave an empty hero.
-          if (!disposed) buildProceduralCluster()
+          if (!disposed) {
+            buildCore()
+            buildOrbits()
+          }
         },
       )
     } else {
-      buildProceduralCluster()
+      buildCore()
+      buildOrbits()
     }
 
     let targetRotX = 0
@@ -229,6 +258,7 @@ export default function HeroObject({ modelUrl, className = '' }: Props) {
       cancelAnimationFrame(raf)
       window.removeEventListener('pointermove', onPointerMove)
       window.removeEventListener('resize', resize)
+      draco?.dispose()
       for (const d of disposables) d.dispose()
       scene.traverse((obj) => {
         if (obj instanceof THREE.Mesh) {

@@ -6,12 +6,23 @@ Sections: hero, scroll-driven marquee, about, what I do, projects.
 
 ## Notable pieces
 
-**Point-cloud portrait.** `src/components/PointCloudPortrait.tsx` samples a
-cut-out photo into a particle grid and pushes each particle along Z by its own
-brightness, so the face gains real relief under a perspective camera. The cloud
-tilts toward the pointer and scatters on hover. Colour is remapped onto the same
-steel ramp as the hero heading so the portrait belongs to the page rather than
-sitting on it.
+**3D avatar.** `src/assets/avatar.glb` is a model generated from a photo, shown
+by `src/components/HeroObject.tsx` with chrome rings orbiting its base. The
+component frames whatever model it is given: it measures the bounding box,
+centres it and scales to a fixed height, so swapping the file needs no code
+change. With no model present it falls back to a procedural chrome cluster.
+
+`src/avatar.ts` resolves the file through `import.meta.glob`, so the build does
+not break when the asset is absent.
+
+**Procedural environment.** `src/three/environment.ts` builds the reflection map
+from coloured emissive panels rather than loading an HDRI. A 1k HDR costs about
+1.6 MB and reflects a generic studio; this costs nothing to download and puts
+the site's own magenta and cyan into every chrome surface.
+
+Accent surfaces use clearcoat and iridescence rather than `transmission`.
+Transmissive glass renders as a flat silhouette here, because the canvas is
+alpha-transparent and has nothing behind it to refract.
 
 **No third-party assets.** Every image is either generated locally into
 `public/gen` or derived from Artem's own photo. Nothing is hotlinked.
@@ -34,6 +45,20 @@ identity.
 
 Generated files are committed, so a fresh clone builds without running any of
 the scripts.
+
+### Replacing the avatar
+
+Export a `.glb` and save it over `src/assets/avatar.glb`, then compress it:
+
+```bash
+npx gltf-transform optimize src/assets/avatar.glb src/assets/avatar.glb \
+  --texture-compress webp --texture-size 2048 --compress draco
+```
+
+The source model was 16.2 MB; the same model Draco-compressed is 1.2 MB, and
+texture compression alone only reaches 8.6 MB, so Draco earns its decoder. That
+decoder lives in `public/draco/` and is copied from the `three` package —
+without it the loader cannot read the file.
 
 ## Stack
 

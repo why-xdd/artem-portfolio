@@ -1,7 +1,10 @@
-import { useRef } from 'react'
+import { lazy, Suspense, useRef } from 'react'
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 import FadeIn from '../components/FadeIn'
 import { GhostButton } from '../components/Buttons'
+import useMediaQuery from '../useMediaQuery'
+
+const DecorScene = lazy(() => import('../components/DecorScene'))
 
 type Project = {
   n: string
@@ -43,6 +46,8 @@ const PROJECTS: Project[] = [
 
 export default function ProjectsSection() {
   const containerRef = useRef<HTMLDivElement>(null)
+  // Side decoration only has room to sit beside the cards on wide screens.
+  const wide = useMediaQuery('(min-width: 1024px)')
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end end'],
@@ -51,9 +56,19 @@ export default function ProjectsSection() {
   return (
     <section
       id="projects"
-      className="relative z-10 -mt-10 rounded-t-[40px] bg-[#0C0C0C] px-5 py-20 sm:-mt-12 sm:rounded-t-[50px] sm:px-8 md:-mt-14 md:rounded-t-[60px] md:px-10"
+      className="relative z-10 -mt-10 overflow-hidden rounded-t-[40px] bg-[#0C0C0C] px-5 py-20 sm:-mt-12 sm:rounded-t-[50px] sm:px-8 md:-mt-14 md:rounded-t-[60px] md:px-10"
     >
-      <FadeIn delay={0} y={40}>
+      {wide && (
+        <Suspense fallback={null}>
+          <DecorScene
+            variant="edges"
+            className="pointer-events-none absolute inset-0 z-0"
+          />
+        </Suspense>
+      )}
+
+      {/* Positioned canvas would otherwise paint over the in-flow content. */}
+      <FadeIn delay={0} y={40} className="relative z-10">
         <h2
           className="hero-heading mb-16 text-center leading-none font-black tracking-tight uppercase sm:mb-20"
           style={{ fontSize: 'clamp(3rem, 12vw, 160px)' }}
@@ -62,7 +77,7 @@ export default function ProjectsSection() {
         </h2>
       </FadeIn>
 
-      <div ref={containerRef} className="mx-auto max-w-6xl">
+      <div ref={containerRef} className="relative z-10 mx-auto max-w-6xl">
         {PROJECTS.map((project, i) => (
           <Card
             key={project.n}

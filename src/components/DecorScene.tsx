@@ -16,7 +16,16 @@ import {
  * Scroll drives rotation, so the objects turn as the section passes rather
  * than spinning on a timer of their own.
  */
-export default function DecorScene({ className = '' }: { className?: string }) {
+type Variant = 'corners' | 'edges'
+
+export default function DecorScene({
+  className = '',
+  variant = 'corners',
+}: {
+  className?: string
+  /** `corners` frames a centred block; `edges` hugs the sides of a tall list. */
+  variant?: Variant
+}) {
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -74,10 +83,19 @@ export default function DecorScene({ className = '' }: { className?: string }) {
     }
 
     // Anchors stay inside ±0.78 so the widest object still clears the edge.
-    add(new THREE.TorusKnotGeometry(0.55, 0.17, 220, 32), chrome, [-0.74, 0.6], 1, [0.3, 0.5], 0.16)
-    add(new THREE.IcosahedronGeometry(0.72, 0), accent, [0.76, 0.6], 1, [-0.25, 0.4], 0.2)
-    add(new THREE.OctahedronGeometry(0.7, 0), graphite, [-0.7, -0.6], 1, [0.4, -0.3], 0.14)
-    add(new THREE.TorusGeometry(0.6, 0.19, 32, 140), chrome, [0.72, -0.6], 1, [0.35, 0.45], 0.18)
+    if (variant === 'corners') {
+      add(new THREE.TorusKnotGeometry(0.55, 0.17, 220, 32), chrome, [-0.74, 0.6], 1, [0.3, 0.5], 0.16)
+      add(new THREE.IcosahedronGeometry(0.72, 0), accent, [0.76, 0.6], 1, [-0.25, 0.4], 0.2)
+      add(new THREE.OctahedronGeometry(0.7, 0), graphite, [-0.7, -0.6], 1, [0.4, -0.3], 0.14)
+      add(new THREE.TorusGeometry(0.6, 0.19, 32, 140), chrome, [0.72, -0.6], 1, [0.35, 0.45], 0.18)
+    } else {
+      // Spread down both sides so a long scrolling list keeps company without
+      // anything drifting over the cards.
+      add(new THREE.TorusGeometry(0.5, 0.16, 32, 140), chrome, [-0.78, 0.72], 0.9, [0.3, 0.5], 0.16)
+      add(new THREE.OctahedronGeometry(0.58, 0), accent, [0.8, 0.3], 0.9, [-0.3, 0.4], 0.2)
+      add(new THREE.IcosahedronGeometry(0.52, 0), graphite, [-0.8, -0.12], 0.9, [0.35, -0.3], 0.14)
+      add(new THREE.TorusKnotGeometry(0.4, 0.13, 180, 28), chrome, [0.78, -0.68], 0.9, [0.4, 0.45], 0.18)
+    }
 
     function resize() {
       const w = container!.clientWidth
@@ -144,7 +162,7 @@ export default function DecorScene({ className = '' }: { className?: string }) {
         container.removeChild(renderer.domElement)
       }
     }
-  }, [])
+  }, [variant])
 
   return <div ref={containerRef} className={className} aria-hidden="true" />
 }

@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+@import "@fontsource/kanit/300.css";
+@import "@fontsource/kanit/400.css";
+@import "@fontsource/kanit/500.css";
+@import "@fontsource/kanit/600.css";
+@import "@fontsource/kanit/700.css";
+@import "@fontsource/kanit/800.css";
+@import "@fontsource/kanit/900.css";
+
+@theme {
+  --font-sans: "Kanit", sans-serif;
+  --color-ink: #0c0c0c;
+  --color-mist: #d7e2ea;
+}
+
+/* The reset lives in @layer base on purpose. Unlayered rules outrank every
+   layered one, so a bare `* { padding: 0 }` would silently beat all of
+   Tailwind's spacing utilities. */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  html,
+  body,
+  #root {
+    background: #0c0c0c;
+  }
+
+  body {
+    font-family: "Kanit", sans-serif;
+    color: #d7e2ea;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* The site's one signature text treatment: a top-down metal gradient. */
+.hero-heading {
+  background: linear-gradient(180deg, #646973 0%, #bbccd7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+::selection {
+  background: #b600a8;
+  color: #ffffff;
+}
+
+:focus-visible {
+  outline: 2px solid #bbccd7;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

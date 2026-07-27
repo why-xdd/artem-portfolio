@@ -2,11 +2,11 @@ import { lazy, Suspense } from 'react'
 import FadeIn from '../components/FadeIn'
 import Magnet from '../components/Magnet'
 import { ContactButton } from '../components/Buttons'
-import portrait from '../assets/portrait-cutout.png'
+import { AVATAR_URL } from '../avatar'
 
-// Three.js is the heaviest dependency here and only the portrait needs it, so
-// it loads in its own chunk once the rest of the hero has painted.
-const PointCloudPortrait = lazy(() => import('../components/PointCloudPortrait'))
+// Three.js is the heaviest dependency here and only the centrepiece needs it,
+// so it loads in its own chunk once the rest of the hero has painted.
+const HeroObject = lazy(() => import('../components/HeroObject'))
 
 const PORTRAIT_BOX = 'h-[340px] w-full sm:h-[420px] md:h-[500px] lg:h-[580px]'
 
@@ -75,7 +75,7 @@ export default function HeroSection() {
             inactiveTransition="transform 0.6s ease-in-out"
           >
             <Suspense fallback={<div className={PORTRAIT_BOX} />}>
-              <PointCloudPortrait src={portrait} className={PORTRAIT_BOX} />
+              <HeroObject modelUrl={AVATAR_URL} className={PORTRAIT_BOX} />
             </Suspense>
           </Magnet>
         </FadeIn>

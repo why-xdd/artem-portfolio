@@ -49,14 +49,19 @@ function stamp(): string {
 }
 
 /**
- * Red first, because red is the loudest key on the bar and this service has
- * exactly one thing it wants pressed. The index can afford the cool end.
+ * Numbers ascend left to right, and red lands on the last cell.
+ *
+ * Putting the red key first did give contact the loudest colour, but it left
+ * the bar reading 500 · 200 · 300 · 100 — a broken count on a service whose
+ * whole instruction is "key a number". Ascending order keeps that lesson
+ * intact, and contact still holds red at the end of the run, which is where a
+ * primary action sits anyway.
  */
 const LINKS = [
-  { page: 500, label: 'CONTACT', colour: TT.red },
+  { page: 100, label: 'INDEX', colour: TT.cyan },
   { page: 200, label: 'WORK', colour: TT.green },
   { page: 300, label: 'WHAT I DO', colour: TT.yellow },
-  { page: 100, label: 'INDEX', colour: TT.cyan },
+  { page: 500, label: 'CONTACT', colour: TT.red },
 ] as const
 
 /**

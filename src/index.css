@@ -144,6 +144,14 @@
   .tt-still-source {
     display: none;
   }
+
+  /* Below this the capture stops scaling and starts scrolling. Shrinking a
+     terminal capture to fit a phone turns measured output into texture. */
+  .tt-still-image {
+    width: auto;
+    min-width: 620px;
+    max-width: none;
+  }
 }
 
 /* The set itself: a black tube with a faint curvature and the scan structure

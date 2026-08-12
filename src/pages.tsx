@@ -361,49 +361,95 @@ export function AboutPage({ onGo }: { onGo: (page: number) => void }) {
   )
 }
 
-/** P500 — the only page this service exists to deliver a visitor to. */
-export function ContactPage() {
+/**
+ * P500 — the only page this service exists to deliver a visitor to.
+ *
+ * So the address is the page, drawn in the same mosaic as the headlines
+ * rather than set as body copy under a band that outweighs it.
+ */
+export function ContactPage({ onGo }: { onGo: (page: number) => void }) {
   return (
     <>
-      <h1 style={{ marginBottom: cells(1) }}>
-        <BlockText colour="yellow" cells={3}>
-          CONTACT
+      <h1 style={{ marginBottom: cells(0.9) }}>
+        <BlockText colour="yellow" cells={2.8}>
+          WRITE TO ME
         </BlockText>
       </h1>
 
       <Body>
-        Open to a backend or ML internship. If something on this service was
-        worth a second look, the fastest route is email — I answer every one.
+        Open to a backend or ML internship. If anything on this service was
+        worth a second look, email is the fastest route — I answer every one,
+        the same day, in English or Russian.
       </Body>
 
-      <Panel title="WRITE TO ME" ground="magenta" titleColour="black">
-        <p
-          style={{
-            color: TT.white,
-            fontSize: 'var(--t-md)',
-            lineHeight: 1.9,
-            wordBreak: 'break-all',
-            marginBottom: cells(1),
-          }}
+      <div
+        style={{
+          background: TT.magenta,
+          padding: `${cells(1)} ${cells(0.9)}`,
+          marginBottom: cells(1.2),
+        }}
+      >
+        <div style={{ color: TT.black, fontSize: 'var(--t-xs)', marginBottom: cells(0.7) }}>
+          ADDRESS
+        </div>
+        <a
+          href={`mailto:${CONTACT.email}`}
+          aria-label={`Email ${CONTACT.email}`}
+          style={{ display: 'block', marginBottom: cells(0.9) }}
         >
-          {CONTACT.email}
-        </p>
+          <BlockText colour="black" cells={1.9}>
+            {['WHY.NOT.LIVE', 'ALONE@GMAIL.COM']}
+          </BlockText>
+        </a>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: cells(1.2) }}>
-          <Action colour="cyan" href={`mailto:${CONTACT.email}`}>
-            SEND MAIL &gt;&gt;
+          <Action colour="black" href={`mailto:${CONTACT.email}`}>
+            <span style={{ color: TT.white }}>SEND MAIL &gt;&gt;</span>
           </Action>
           <Action colour="white" href={CONTACT.github}>
             {CONTACT.githubLabel}
           </Action>
         </div>
-      </Panel>
+      </div>
 
-      <Panel title="WHAT TO EXPECT" ground="blue">
-        <p style={{ color: TT.white, fontSize: 'var(--t-sm)', lineHeight: 2 }}>
-          A reply the same day, in English or Russian. If you want to talk
-          through the private work — the card bot in production, or the sorting
-          hub model — I will walk you through the architecture on a call.
-        </p>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
+          gap: cells(1.2),
+          marginBottom: cells(1.5),
+        }}
+      >
+        <Panel title="WHAT TO EXPECT" ground="blue">
+          <p style={{ color: TT.white, fontSize: 'var(--t-sm)', lineHeight: 2 }}>
+            A reply the same day. If you want to talk through the private
+            work — the card bot in production, or the sorting hub model — I
+            will walk through the architecture on a call.
+          </p>
+        </Panel>
+
+        <Panel title="WHAT I AM AFTER" ground="green" titleColour="black">
+          <p style={{ color: TT.white, fontSize: 'var(--t-sm)', lineHeight: 2 }}>
+            A backend or ML internship. Computer science student in Moscow.
+            Python and Go on the server, with a detour into real-time audio
+            that I enjoyed far more than expected.
+          </p>
+        </Panel>
+      </div>
+
+      {/* Nobody should have to press back to find the evidence again. */}
+      <Panel title="BEFORE YOU GO" right="THE WORK">
+        {WORKS.slice(0, 6).map((work, i) => (
+          <div key={work.page}>
+            <IndexRow
+              name={work.name}
+              status={work.status}
+              statusColour={statusColour(work.status)}
+              page={work.page}
+              onSelect={() => onGo(work.page)}
+            />
+            {i < 5 ? <Rule colour="white" /> : null}
+          </div>
+        ))}
       </Panel>
     </>
   )

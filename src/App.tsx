@@ -98,7 +98,7 @@ export default function App() {
           {work ? <WorkPage work={work} onGo={go} /> : null}
           {page === 300 ? <SkillsPage /> : null}
           {page === 400 ? <AboutPage onGo={go} /> : null}
-          {page === 500 ? <ContactPage /> : null}
+          {page === 500 ? <ContactPage onGo={go} /> : null}
         </main>
 
         <p

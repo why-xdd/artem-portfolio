@@ -53,8 +53,10 @@ export function Rule({ colour = 'white' }: { colour?: TTColour }) {
 }
 
 /**
- * A row of the index. Three fixed columns, the way a broadcast index ruled
- * them: what it is, what state it is in, and the number you key to reach it.
+ * A row of the index: what it is, a leader across the gap, what state it is
+ * in, and the number you key to reach it. The leader is not decoration — a
+ * name on the left and a number eight hundred pixels to the right are two
+ * separate things without it, which is why every printed index has one.
  */
 export function IndexRow({
   name,
@@ -74,11 +76,10 @@ export function IndexRow({
       type="button"
       onClick={onSelect}
       style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr auto auto',
+        display: 'flex',
         width: '100%',
         alignItems: 'baseline',
-        gap: cells(1),
+        gap: cells(0.6),
         padding: `${cells(0.34)} ${cells(0.4)}`,
         background: 'transparent',
         color: TT.white,
@@ -90,9 +91,25 @@ export function IndexRow({
         minHeight: 'max(44px, calc(var(--cell) * 2.2))',
       }}
     >
-      <span>{name}</span>
-      <span style={{ color: TT[statusColour], fontSize: 'var(--t-xs)' }}>{status}</span>
-      <span style={{ color: TT.green, minWidth: cells(2.4), textAlign: 'right' }}>{page}</span>
+      <span style={{ whiteSpace: 'nowrap' }}>{name}</span>
+      <span
+        aria-hidden
+        style={{
+          flex: 1,
+          alignSelf: 'center',
+          minWidth: cells(1),
+          height: cells(0.16),
+          backgroundImage: `repeating-linear-gradient(to right, ${TT[statusColour]} 0 ${cells(0.16)}, transparent ${cells(0.16)} ${cells(0.5)})`,
+        }}
+      />
+      <span style={{ color: TT[statusColour], fontSize: 'var(--t-xs)', whiteSpace: 'nowrap' }}>
+        {status}
+      </span>
+      {/* The number carries the status colour too. The copy promises one code;
+          it cannot live on only half the row. */}
+      <span style={{ color: TT[statusColour], minWidth: cells(2.4), textAlign: 'right' }}>
+        {page}
+      </span>
     </button>
   )
 }
@@ -219,11 +236,15 @@ export function Still({
           overscrollBehaviorX: 'contain',
         }}
       >
+        {/* `min(100%, 560px)` was the bug: on a 330px screen it evaluates to
+            100%, so there was no minimum and nothing ever scrolled. A flat
+            floor is what makes the capture readable and the scroll real. */}
         <img
           src={src}
           alt={alt}
           loading="lazy"
-          style={{ display: 'block', width: '100%', minWidth: 'min(100%, 560px)' }}
+          className="tt-still-image"
+          style={{ display: 'block', width: '100%' }}
         />
       </div>
       <figcaption

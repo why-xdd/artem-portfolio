@@ -110,13 +110,19 @@
   text-align: left;
 }
 
+/* The scroll hint only exists where the still actually scrolls. */
+.tt-scroll-hint {
+  display: none;
+}
+
 @media (max-width: 760px) {
   .tt-hero {
     grid-template-columns: minmax(0, 1fr);
   }
 
+  /* The claim leads on a phone too. Opening on the portrait puts the one
+     sentence that says what this person does below the fold. */
   .tt-hero > .tt-hero-picture {
-    order: -1;
     max-width: calc(var(--cell) * 14);
     margin-inline: 0;
   }
@@ -128,6 +134,14 @@
   }
 
   .tt-clock {
+    display: none;
+  }
+
+  .tt-scroll-hint {
+    display: inline;
+  }
+
+  .tt-still-source {
     display: none;
   }
 }

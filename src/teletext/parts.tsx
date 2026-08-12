@@ -178,7 +178,18 @@ export function Action({
  * A still held on the page, the way a broadcast service framed a photograph
  * it could not draw in mosaic: a labelled window with the picture inside.
  */
-export function Still({ src, alt, caption }: { src: string; alt: string; caption: string }) {
+export function Still({
+  src,
+  alt,
+  caption,
+  source = 'OFF-AIR CAPTURE',
+}: {
+  src: string
+  alt: string
+  caption: string
+  /** Named on the frame, so a still that is not in the eight says so. */
+  source?: string
+}) {
   return (
     <figure style={{ marginBottom: cells(1.2) }}>
       <div
@@ -192,20 +203,29 @@ export function Still({ src, alt, caption }: { src: string; alt: string; caption
         }}
       >
         <span>STILL</span>
-        <span>OFF-AIR CAPTURE</span>
+        <span className="tt-scroll-hint">SCROLL TO READ &gt;&gt;</span>
+        <span className="tt-still-source">{source}</span>
       </div>
-      <img
-        src={src}
-        alt={alt}
-        loading="lazy"
+      {/* A still holds measured output, and output that has been shrunk until
+          the digits blur has stopped being evidence. Below the width where it
+          stays legible the frame scrolls rather than scaling further. */}
+      <div
+        className="tt-still-window"
         style={{
-          display: 'block',
-          width: '100%',
           border: `${cells(0.16)} solid ${TT.cyan}`,
           borderTop: 0,
           background: TT.black,
+          overflowX: 'auto',
+          overscrollBehaviorX: 'contain',
         }}
-      />
+      >
+        <img
+          src={src}
+          alt={alt}
+          loading="lazy"
+          style={{ display: 'block', width: '100%', minWidth: 'min(100%, 560px)' }}
+        />
+      </div>
       <figcaption
         style={{
           color: TT.cyan,

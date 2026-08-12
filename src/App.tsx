@@ -91,7 +91,7 @@ export default function App() {
         <main
           key={page}
           className="tt-page-in"
-          style={{ flex: 1, padding: `${cells(1.2)} ${cells(0.4)} ${cells(2)}` }}
+          style={{ flex: 1, padding: `${cells(1.2)} ${cells(0.75)} ${cells(2)}` }}
         >
           {page === 100 ? <FrontPage onGo={go} /> : null}
           {page === 200 ? <WorkIndex onGo={go} /> : null}

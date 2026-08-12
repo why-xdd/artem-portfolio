@@ -6,6 +6,8 @@ export type Shot = {
   src: string
   alt: string
   caption: string
+  /** Overrides the frame's source label where a still is not in the eight. */
+  source?: string
 }
 
 export type Work = {
@@ -196,6 +198,7 @@ export const WORKS: Work[] = [
         src: `${A}/queueviz-demo.gif`,
         alt: 'queueviz at 150 percent offered load: three tenant lanes filling at different rates under weighted fair queueing',
         caption: 'Fair queueing at 150 per cent load. The flooding tenant grows its own lane.',
+        source: 'LIVE RECORDING, OWN COLOURS',
       },
       {
         src: `${A}/queueviz-still.png`,

@@ -105,6 +105,23 @@ export function FrontPage({ onGo }: { onGo: (page: number) => void }) {
         <span style={{ whiteSpace: 'nowrap' }}>PAGE 204 &gt;&gt;</span>
       </button>
 
+      {/* The nine works belong on the page a visitor lands on. Sending them to
+          200 first spends the only minute this service gets on a menu. */}
+      <Panel title="THE WORK" right="KEY A NUMBER">
+        {WORKS.map((work, i) => (
+          <div key={work.page}>
+            <IndexRow
+              name={work.name}
+              status={work.status}
+              statusColour={statusColour(work.status)}
+              page={work.page}
+              onSelect={() => onGo(work.page)}
+            />
+            {i < WORKS.length - 1 ? <Rule colour="white" /> : null}
+          </div>
+        ))}
+      </Panel>
+
       <Panel title="WHY THIS SERVICE" right="MORE 400 >">
         <div
           style={{
@@ -184,10 +201,19 @@ export function WorkPage({ work, onGo }: { work: Work; onGo: (page: number) => v
 
   return (
     <>
+      <h1 style={{ marginBottom: cells(0.75) }}>
+        <BlockText colour="yellow" cells={2.6}>
+          {work.name}
+        </BlockText>
+      </h1>
+
+      {/* Under the title, not over it: a label above a heading is an eyebrow,
+          and the heading is perfectly able to arrive first. */}
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
+          flexWrap: 'wrap',
           gap: cells(0.75),
           marginBottom: cells(0.75),
         }}
@@ -195,12 +221,6 @@ export function WorkPage({ work, onGo }: { work: Work; onGo: (page: number) => v
         <Tag label={work.status} colour={statusColour(work.status)} />
         <span style={{ color: TT.cyan, fontSize: 'var(--t-xs)' }}>{work.stack}</span>
       </div>
-
-      <h1 style={{ marginBottom: cells(0.9) }}>
-        <BlockText colour="yellow" cells={2.6}>
-          {work.name}
-        </BlockText>
-      </h1>
 
       <Body>{work.line}</Body>
 
@@ -223,6 +243,7 @@ export function WorkPage({ work, onGo }: { work: Work; onGo: (page: number) => v
       {work.shots.map((shot) => (
         <Still key={shot.src} {...shot} />
       ))}
+
 
       {work.body.map((paragraph) => (
         <Body key={paragraph.slice(0, 24)}>{paragraph}</Body>

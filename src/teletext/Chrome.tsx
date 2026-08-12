@@ -48,11 +48,15 @@ function stamp(): string {
   return `${day.toUpperCase()} ${time}`
 }
 
+/**
+ * Red first, because red is the loudest key on the bar and this service has
+ * exactly one thing it wants pressed. The index can afford the cool end.
+ */
 const LINKS = [
-  { page: 100, label: 'INDEX', colour: TT.red },
+  { page: 500, label: 'CONTACT', colour: TT.red },
   { page: 200, label: 'WORK', colour: TT.green },
   { page: 300, label: 'WHAT I DO', colour: TT.yellow },
-  { page: 500, label: 'CONTACT', colour: TT.cyan },
+  { page: 100, label: 'INDEX', colour: TT.cyan },
 ] as const
 
 /**
@@ -70,7 +74,7 @@ export function Fastext({ page, onGo }: { page: number; onGo: (page: number) => 
         bottom: 0,
         zIndex: 30,
         display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
+        gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
         gap: cells(0.16),
         background: TT.black,
         paddingTop: cells(0.16),

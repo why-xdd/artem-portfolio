@@ -43,11 +43,15 @@ function buildFigure(): THREE.Group {
   const flat = (colour: number) =>
     new THREE.MeshLambertMaterial({ color: colour, flatShading: true })
 
-  const skin = flat(0xffff00)
+  // Skin and shirt carry a little of the third channel on purpose. A material
+  // of pure yellow can only ever quantise to yellow or black, so the face
+  // comes out as one flat disc; lifting blue to 0x70 lets the lit side cross
+  // into white and the boundary become a dithered checker — which is how this
+  // medium shaded anything at all.
+  const skin = flat(0xffff70)
   const hair = flat(0xff00ff)
   const dark = flat(0x000000)
-  const shirt = flat(0x0000ff)
-  const bright = flat(0xffffff)
+  const shirt = flat(0x3030ff)
   const trim = flat(0x00ffff)
 
   const head = new THREE.Mesh(new THREE.SphereGeometry(1.18, 16, 13), skin)
@@ -77,29 +81,27 @@ function buildFigure(): THREE.Group {
   fringe.rotation.x = -0.2
   group.add(fringe)
 
-  // Sunglasses at eye height, wide enough to survive the grid: two cells of
-  // lens is the difference between a face and a smudge.
-  const lensGeometry = new THREE.BoxGeometry(0.78, 0.42, 0.14)
+  // Two lenses with daylight between them. Set any closer and the grid welds
+  // them into one black bar across the face, which is a blindfold, not a pair
+  // of sunglasses.
+  const lensGeometry = new THREE.BoxGeometry(0.62, 0.38, 0.14)
   for (const side of [-1, 1]) {
     const lens = new THREE.Mesh(lensGeometry, dark)
-    lens.position.set(side * 0.46, 1.58, 0.94)
+    lens.position.set(side * 0.52, 1.58, 0.94)
     lens.rotation.z = side * 0.05
     group.add(lens)
   }
-  const bridge = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.1, 0.12), dark)
-  bridge.position.set(0, 1.58, 0.96)
+  // A hairline bridge, thin enough that the gap between the lenses survives
+  // quantisation as skin rather than closing up.
+  const bridge = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.06, 0.1), dark)
+  bridge.position.set(0, 1.6, 0.95)
   group.add(bridge)
 
-  // One lit cell on the near lens; the mosaic reads it as a single white
-  // block, which is what sells the glass.
-  const glint = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.12, 0.06), bright)
-  glint.position.set(-0.62, 1.68, 1.01)
-  group.add(glint)
-
   // Sat proud of the face, or the sphere clips it into two stray marks.
-  const mouth = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.11, 0.1), dark)
+  const mouth = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.08, 0.1), dark)
   mouth.position.set(0, 1.04, 1.02)
   group.add(mouth)
+
 
   const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.4, 0.55, 10), skin)
   neck.position.y = 0.52
@@ -135,10 +137,19 @@ export default function StylisedAvatar({ label }: { label: string }) {
 
     // Lit flat and from the front. Shading here separates the parts; it is not
     // asked to carry atmosphere, because eight colours cannot hold any.
-    scene.add(new THREE.AmbientLight(0xffffff, 1.5))
-    const key = new THREE.DirectionalLight(0xffffff, 1.1)
+    scene.add(new THREE.AmbientLight(0xffffff, 1.15))
+    const key = new THREE.DirectionalLight(0xffffff, 0.95)
     key.position.set(1.6, 2.4, 5)
     scene.add(key)
+
+    // The shading light is blue, and only blue. On a yellow face it can lift
+    // nothing but the third channel, so the surfaces it reaches cross into
+    // white while the rest stay yellow — one clean tone step with a dithered
+    // boundary, which is precisely how this medium shaded a curve. A white
+    // light would raise all three channels and leave the face flat.
+    const shaper = new THREE.DirectionalLight(0x0000ff, 2.4)
+    shaper.position.set(-2.6, 2.2, 3.4)
+    scene.add(shaper)
 
     const camera = new THREE.PerspectiveCamera(32, GRID_W / GRID_H, 0.1, 100)
     camera.position.set(0, 1.32, 7.1)
@@ -217,7 +228,7 @@ export default function StylisedAvatar({ label }: { label: string }) {
         for (let y = 0; y < GRID_H; y += 1) {
           for (let x = 0; x < GRID_W; x += 1) {
             const i = (y * GRID_W + x) * 4
-            const bias = BAYER[(y % 4) * 4 + (x % 4)] * 12
+            const bias = BAYER[(y % 4) * 4 + (x % 4)] * 42
             const r = data[i] + bias
             const g = data[i + 1] + bias
             const b = data[i + 2] + bias

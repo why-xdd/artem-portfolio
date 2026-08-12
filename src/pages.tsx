@@ -401,11 +401,14 @@ export function ContactPage({ onGo }: { onGo: (page: number) => void }) {
             {['WHY.NOT.LIVE', 'ALONE@GMAIL.COM']}
           </BlockText>
         </a>
+        {/* The one control this whole service is built to have pressed takes
+            the world's filled button with its doubled outline; the link
+            beside it goes quiet, so the pair cannot be confused. */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: cells(1.2) }}>
-          <Action colour="black" href={`mailto:${CONTACT.email}`}>
-            <span style={{ color: TT.white }}>SEND MAIL &gt;&gt;</span>
+          <Action colour="white" href={`mailto:${CONTACT.email}`}>
+            SEND MAIL &gt;&gt;
           </Action>
-          <Action colour="white" href={CONTACT.github}>
+          <Action colour="black" quiet href={CONTACT.github}>
             {CONTACT.githubLabel}
           </Action>
         </div>

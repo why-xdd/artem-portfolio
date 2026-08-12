@@ -150,26 +150,33 @@ export function Action({
   href,
   onClick,
   colour = 'cyan',
+  quiet,
 }: {
   children: ReactNode
   href?: string
   onClick?: () => void
   colour?: TTColour
+  /** The alternative beside a primary: outlined, not filled. */
+  quiet?: boolean
 }) {
   const style = {
     display: 'inline-flex',
     alignItems: 'center',
     gap: cells(0.4),
-    background: TT[colour],
-    color: TT.black,
+    background: quiet ? 'transparent' : TT[colour],
+    color: quiet ? TT[colour] : TT.black,
     padding: `${cells(0.5)} ${cells(0.9)}`,
     fontSize: 'var(--t-sm)',
     minHeight: 'max(44px, calc(var(--cell) * 2))',
-    border: 0,
+    border: quiet ? `${cells(0.16)} solid ${TT[colour]}` : 0,
     cursor: 'pointer',
     fontFamily: 'inherit',
     textDecoration: 'none',
-    boxShadow: `0 0 0 ${cells(0.16)} ${TT.black}, 0 0 0 ${cells(0.32)} ${TT[colour]}`,
+    // The filled button keeps the card's doubled outline. A quiet one takes a
+    // single rule, so the pair cannot be mistaken for each other.
+    boxShadow: quiet
+      ? 'none'
+      : `0 0 0 ${cells(0.16)} ${TT.black}, 0 0 0 ${cells(0.32)} ${TT[colour]}`,
   } as const
 
   if (href) {

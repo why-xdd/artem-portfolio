@@ -228,7 +228,12 @@ export function Still({
       >
         <span>STILL</span>
         <span className="tt-scroll-hint">SCROLL TO READ &gt;&gt;</span>
-        <span className="tt-still-source">{source}</span>
+        {/* The default label is redundant with the frame and can go on a
+            phone. A custom one is a disclosure — it is the only thing saying
+            this still is not in the eight — so it stays at every width. */}
+        <span className={source === 'OFF-AIR CAPTURE' ? 'tt-still-source' : undefined}>
+          {source}
+        </span>
       </div>
       {/* A still holds measured output, and output that has been shrunk until
           the digits blur has stopped being evidence. Below the width where it

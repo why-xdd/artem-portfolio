@@ -31,3 +31,5 @@ dist-ssr
 .vercel/
 .playwright-mcp/
 *.log
+
+.vercel

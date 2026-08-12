@@ -23,7 +23,11 @@ dist-ssr
 *.sln
 *.sw?
 
-# Local tooling state
+# Local tooling state. These carry machine paths, session ids and cost
+# telemetry; none of it belongs in a repository that will be public.
 .omc/
+.claude/
+.impeccable/
+.vercel/
 .playwright-mcp/
 *.log

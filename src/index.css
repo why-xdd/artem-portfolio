@@ -1,22 +1,23 @@
 @import "tailwindcss";
 
-@import "@fontsource/kanit/300.css";
-@import "@fontsource/kanit/400.css";
-@import "@fontsource/kanit/500.css";
-@import "@fontsource/kanit/600.css";
-@import "@fontsource/kanit/700.css";
-@import "@fontsource/kanit/800.css";
-@import "@fontsource/kanit/900.css";
+@import "@fontsource/press-start-2p/400.css";
 
+/* The broadcast eight. Three bits of colour, fully on or fully off — no
+   tints, no blends, no gradients anywhere in this build. */
 @theme {
-  --font-sans: "Kanit", sans-serif;
-  --color-ink: #0c0c0c;
-  --color-mist: #d7e2ea;
+  --font-sans: "Press Start 2P", monospace;
+  --font-mono: "Press Start 2P", monospace;
+
+  --color-tt-black: #000000;
+  --color-tt-red: #ff0000;
+  --color-tt-green: #00ff00;
+  --color-tt-yellow: #ffff00;
+  --color-tt-blue: #0000ff;
+  --color-tt-magenta: #ff00ff;
+  --color-tt-cyan: #00ffff;
+  --color-tt-white: #ffffff;
 }
 
-/* The reset lives in @layer base on purpose. Unlayered rules outrank every
-   layered one, so a bare `* { padding: 0 }` would silently beat all of
-   Tailwind's spacing utilities. */
 @layer base {
   *,
   *::before,
@@ -29,37 +30,170 @@
     padding: 0;
   }
 
+  /* The forty-column row is the law of this medium. The cell scales; the row
+     never reflows. On a phone the page is the same forty columns, smaller —
+     which is exactly how a broadcast page behaved on a portable set. */
+  :root {
+    --cols: 40;
+    --page: min(100vw - 2 * var(--gutter), 1120px);
+    --gutter: clamp(8px, 2vw, 32px);
+    --cell: calc(var(--page) / var(--cols));
+    --row: calc(var(--cell) * 1.35);
+
+    /* The grid rules structure; it may not rule legibility. Forty columns of
+       a phone is a nine-pixel cell, and a broadcast set could get away with
+       that where a recruiter with sixty seconds cannot. Text is sized on its
+       own scale with a floor, and the cell keeps the rhythm. */
+    --t-xs: clamp(10px, 0.55vw + 8px, 13px);
+    --t-sm: clamp(11px, 0.6vw + 8.6px, 14px);
+    --t-md: clamp(12px, 0.7vw + 9.3px, 16px);
+    --t-lg: clamp(14px, 1vw + 10px, 20px);
+  }
+
+  /* Under this width the two-column compositions stack; the cell grows so the
+     structure stays on a grid the eye can still read as one. */
+  @media (max-width: 760px) {
+    :root {
+      --cols: 26;
+    }
+  }
+
   html,
   body,
   #root {
-    background: #0c0c0c;
+    background: #000000;
   }
 
   body {
-    font-family: "Kanit", sans-serif;
-    color: #d7e2ea;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    font-family: "Press Start 2P", monospace;
+    color: #ffffff;
+    font-size: var(--t-md);
+    line-height: 1.9;
+    letter-spacing: 0;
+    /* A bitmap face wants its pixels, not the rasteriser's opinion of them. */
+    -webkit-font-smoothing: none;
+    font-smooth: never;
+    text-rendering: geometricPrecision;
+  }
+
+  /* Press Start 2P carries its own side bearing, so a run of characters is
+     wider than one cell each. This is the correction that makes the face sit
+     on the forty-column grid instead of near it. */
+  .tt-grid-text {
+    font-size: calc(var(--cell) * 0.62);
   }
 }
 
-/* The site's one signature text treatment: a top-down metal gradient. */
-.hero-heading {
-  background: linear-gradient(180deg, #646973 0%, #bbccd7 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+/* The front page is two columns on a set and one on a phone; the picture
+   leads on both, because it is what says a person made this. */
+.tt-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: calc(var(--cell) * 1.2);
+  align-items: start;
+}
+
+.tt-hero-picture {
+  width: 100%;
+  max-width: calc(var(--cell) * 12);
+  margin-inline-start: auto;
+}
+
+/* The alert strip is one row on a set and two on a phone; the page reference
+   stays with it either way. */
+.tt-alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--cell) * 1);
+  width: 100%;
+  text-align: left;
+}
+
+@media (max-width: 760px) {
+  .tt-hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tt-hero > .tt-hero-picture {
+    order: -1;
+    max-width: calc(var(--cell) * 14);
+    margin-inline: 0;
+  }
+
+  .tt-alert {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: calc(var(--cell) * 0.4);
+  }
+
+  .tt-clock {
+    display: none;
+  }
+}
+
+/* The set itself: a black tube with a faint curvature and the scan structure
+   of an interlaced field. Both are held far below the text so they read as
+   the surface the page is printed on, never as an effect over it. */
+.tt-screen {
+  position: relative;
+  isolation: isolate;
+}
+
+.tt-screen::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.22) 0px,
+    rgba(0, 0, 0, 0.22) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: multiply;
+}
+
+/* A page arrives the way a broadcast page arrived: row by row, from the top,
+   fast enough to feel mechanical rather than decorative. */
+@keyframes tt-page-in {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.tt-page-in {
+  animation: tt-page-in 420ms steps(24, end) both;
+}
+
+@keyframes tt-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.tt-blink {
+  animation: tt-blink 1s steps(1, end) infinite;
 }
 
 ::selection {
-  background: #b600a8;
-  color: #ffffff;
+  background: #ffff00;
+  color: #000000;
 }
 
 :focus-visible {
-  outline: 2px solid #bbccd7;
-  outline-offset: 3px;
+  outline: calc(var(--cell) * 0.16) solid #00ffff;
+  outline-offset: calc(var(--cell) * 0.16);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -70,5 +204,9 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .tt-page-in {
+    animation: none;
   }
 }

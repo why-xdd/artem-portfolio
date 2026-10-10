@@ -223,7 +223,13 @@ export function Still({
           padding: `${cells(0.3)} ${cells(0.5)}`,
           fontSize: 'var(--t-xs)',
           display: 'flex',
+          flexWrap: 'wrap',
           justifyContent: 'space-between',
+          // A disclosure label is long, and on a phone it shares the bar with
+          // the scroll hint. It drops to its own row rather than squeezing the
+          // words beside it into one.
+          gap: `${cells(0.2)} ${cells(0.75)}`,
+          whiteSpace: 'nowrap',
         }}
       >
         <span>STILL</span>

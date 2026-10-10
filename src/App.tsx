@@ -6,6 +6,8 @@ import { cells } from './teletext/grid'
 import { TT } from './teletext/palette'
 
 const VALID = new Set<number>([100, 200, 300, 400, 500, ...WORKS.map((work) => work.page)])
+/** The range the footer quotes comes from the works themselves, so a new page cannot leave it stale. */
+const WORK_RANGE = `${WORKS[0].page} TO ${WORKS[WORKS.length - 1].page}`
 const HOME = 100
 
 function pageFromHash(): number {
@@ -114,7 +116,7 @@ export default function App() {
         >
           {missed
             ? `PAGE ${missed} NOT IN THIS MAGAZINE — TRY 100, 200, 300, 400, 500`
-            : 'KEY A PAGE NUMBER ON THE KEYBOARD — 201 TO 209 ARE THE WORK'}
+            : `KEY A PAGE NUMBER ON THE KEYBOARD — ${WORK_RANGE} ARE THE WORK`}
         </p>
 
         <Fastext page={page} onGo={go} />

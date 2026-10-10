@@ -1,7 +1,7 @@
 # Artem — portfolio
 
 A personal site for Artem (`why-xdd`), backend and ML, built as a **broadcast
-teletext service**. Nine works are nine keyed pages; the whole thing exists to
+teletext service**. Ten works are ten keyed pages; the whole thing exists to
 get one email written.
 
 ```bash
@@ -53,7 +53,7 @@ seconds — which is exactly the budget this page gets.
 |---|---|
 | 100 | Front page: the claim, the avatar, the three figures, one hook |
 | 200 | Index of the work, with status colour and page numbers |
-| 201–209 | One work per page: figures, real screenshots, what it does and why |
+| 201–210 | One work per page: figures, real screenshots, what it does and why |
 | 300 | What I do — five capabilities |
 | 400 | About, and how the work is done |
 | 500 | Contact — the page the service exists to deliver |
@@ -88,7 +88,7 @@ Private work is named without a link rather than given a button that 404s.
 
 ## Content
 
-Every factual claim lives in [`src/content.ts`](src/content.ts) — one array, nine
+Every factual claim lives in [`src/content.ts`](src/content.ts) — one array, ten
 entries, each with its stack, its measured figures and the screenshots that show
 them. Nothing about a project is written twice.
 

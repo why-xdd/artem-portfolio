@@ -14,6 +14,8 @@ export type Work = {
   page: number
   name: string
   status: Status
+  /** A distinction earned outside this site, shown beside the status. */
+  honour?: string
   /** One line, in his own voice, that survives being read alone. */
   line: string
   stack: string
@@ -260,6 +262,41 @@ export const WORKS: Work[] = [
     ],
     shots: [],
     note: 'HACKATHON SUBMISSION. REPOSITORY HELD BY THE ORGANISERS.',
+  },
+  {
+    page: 210,
+    name: 'POST-OFFICE-TWIN',
+    status: 'SHIPPED',
+    honour: 'FINALIST · POSTCODE CHALLENGE 2026',
+    line: 'A post office floor plan that checks itself against the building code.',
+    stack: 'PYTHON · FASTAPI · SHAPELY · REACT · THREE.JS',
+    tests: 376,
+    figures: [
+      { label: 'PROBLEMS', value: '11 > 2' },
+      { label: 'PATH IN', value: '0.74 > 1.89 M' },
+      { label: 'BEST SPOT', value: '94% VS 61%' },
+      { label: 'TESTS', value: '376' },
+    ],
+    body: [
+      'Finalist of PostCode Challenge 2026, the Russian Post engineering hackathon by Pochtatech and Innopolis University. Seventeen rules from five Russian codes, and every finding is a measurement, a norm and a clause number, drawn where the floor is narrowest.',
+      "On the organisers' own sample plan one press leaves 2 problems of 11 and widens the path from the entrance to 1.89 metres against a 1.8 norm. An early version reached zero by driving a cashier window into the middle of the hall. Windows are now off-limits, and the README says so.",
+    ],
+    shots: [
+      {
+        src: `${A}/shot-post-office-twin.png`,
+        alt: "The organisers' sample plan with the proposed fix: dashed arrows show where six objects move, and the panel reads problems 11 to 2, clear path 0.74 to 1.89 metres, waiting seats 24 to 20",
+        caption: 'The fix before it is applied. Six moves, and the price named: four seats.',
+        source: 'APP CAPTURE, OWN COLOURS',
+      },
+      {
+        src: `${A}/shot-post-office-twin2.png`,
+        alt: 'The same plan in 3D: equipment models at their real heights, visitor routes as blue strips, the two objects behind the remaining problems marked in red',
+        caption: 'The same plan in 3D, at the heights the equipment dictionary gives.',
+        source: 'APP CAPTURE, OWN COLOURS',
+      },
+    ],
+    repo: 'https://github.com/why-xdd/post-office-twin',
+    note: 'NO HOSTED DEMO. IT RUNS LOCALLY WITH ONE COMMAND, AND THE README SHOWS HOW.',
   },
 ]
 

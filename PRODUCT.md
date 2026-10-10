@@ -29,7 +29,7 @@ if the visitor enjoyed the animation.
 
 ## Positioning
 
-Every claim on this site can be opened and checked in under a minute. Six of the
+Every claim on this site can be opened and checked in under a minute. Seven of the
 projects are public repositories with tests, green CI, and screenshots of their
 real output; one of them is a live application anyone can drive. That is the
 thing a neighbouring student portfolio cannot truthfully copy — not the stack
@@ -51,7 +51,7 @@ cannot show.
 
 ## Capabilities and Constraints
 
-**The work the site presents (nine items, all confirmed):**
+**The work the site presents (ten items, all confirmed):**
 
 | Work | Status | Code |
 |---|---|---|
@@ -64,6 +64,7 @@ cannot show.
 | VoxShift | public | github.com/why-xdd/voxshift |
 | FriendCards | private, in production with live users | no public link |
 | Sorting Center | private hackathon submission, delivered 2 Aug 2026 | no public link |
+| post-office-twin | public, 376 tests, CI green; **finalist of PostCode Challenge 2026** (Russian Post, Pochtatech × Innopolis University), final on 8 Oct 2026; no hosted demo by decision | github.com/why-xdd/post-office-twin |
 
 - **Private work is named, never linked and never source-quoted.** FriendCards
   and the Sorting Center model live in private repositories. They appear because

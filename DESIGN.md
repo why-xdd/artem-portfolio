@@ -380,13 +380,19 @@ geometry, which is quantised into square cells anyway.
 - **Don't** reflow the column grid to fit content; change the column count at the breakpoint
   and let the cell resize.
 
-### The one documented exception
-Stills are re-rendered in the eight. The queueviz recording is the single exception in the
-build and carries its own frame label — `LIVE RECORDING, OWN COLOURS` — because its three
-tenant lanes are distinguished by colour and posterising them to eight would destroy the
-evidence the capture exists to provide. The exception is licensed by that test only:
-posterising must actually destroy the evidence, and the frame must say so. It is not a
-general licence for full-colour imagery.
+### The documented exceptions
+Stills are re-rendered in the eight. Two works are the exceptions in the build, and each frame
+carries its own label saying so:
+
+- **queueviz** — `LIVE RECORDING, OWN COLOURS`. Its three tenant lanes are distinguished by
+  colour, and posterising them to eight would destroy the evidence the capture exists to provide.
+- **post-office-twin** (P210) — `APP CAPTURE, OWN COLOURS`. Tried both ways before deciding:
+  nearest-of-eight and a lightness-inverted remap each erase the dashed move arrows, the ghosted
+  original positions and the hatching on the offending objects, which are the whole content of
+  the capture, and break the small figures in the panel. The 3D still loses its depth the same way.
+
+The exceptions are licensed by that test only: posterising must actually destroy the evidence,
+and the frame must say so. It is not a general licence for full-colour imagery.
 
 <!-- Known debt at time of writing: the finish review ran without an approved comp (no image
 generation available in that session), and the queueviz exception was reasoned rather than

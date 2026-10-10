@@ -31,7 +31,7 @@ export function FrontPage({ onGo }: { onGo: (page: number) => void }) {
           <div style={{ height: cells(1) }} />
 
           <Body>
-            Artem — backend and ML. Nine works, {TOTAL_TESTS} tests, one of them
+            Artem — backend and ML. Ten works, {TOTAL_TESTS} tests, one of them
             live in a browser tab. Every figure on this service has a page
             behind it that proves the figure.
           </Body>
@@ -87,7 +87,7 @@ export function FrontPage({ onGo }: { onGo: (page: number) => void }) {
 
       <button
         type="button"
-        onClick={() => onGo(204)}
+        onClick={() => onGo(210)}
         className="tt-alert"
         style={{
           background: TT.red,
@@ -101,11 +101,11 @@ export function FrontPage({ onGo }: { onGo: (page: number) => void }) {
           marginBottom: cells(1.5),
         }}
       >
-        <span>0.81 MS PER CALL — AND 64% OF THE WHOLE DATABASE</span>
-        <span style={{ whiteSpace: 'nowrap' }}>PAGE 204 &gt;&gt;</span>
+        <span>FINALIST — POSTCODE CHALLENGE 2026, RUSSIAN POST</span>
+        <span style={{ whiteSpace: 'nowrap' }}>PAGE 210 &gt;&gt;</span>
       </button>
 
-      {/* The nine works belong on the page a visitor lands on. Sending them to
+      {/* The ten works belong on the page a visitor lands on. Sending them to
           200 first spends the only minute this service gets on a menu. */}
       <Panel title="THE WORK" right="KEY A NUMBER">
         {WORKS.map((work, i) => (
@@ -139,7 +139,7 @@ export function FrontPage({ onGo }: { onGo: (page: number) => void }) {
             {
               colour: 'magenta' as TTColour,
               title: 'SHIPPED, NOT STARTED',
-              body: 'Six public repositories with tests and green CI. One of them serves real traffic in a browser right now.',
+              body: 'Seven public repositories with tests and green CI. One of them serves real traffic in a browser right now.',
             },
             {
               colour: 'cyan' as TTColour,
@@ -171,7 +171,7 @@ export function WorkIndex({ onGo }: { onGo: (page: number) => void }) {
       </h1>
 
       <Body>
-        Nine of them. Key the page number, or press the row. Colour is status:
+        Ten of them. Key the page number, or press the row. Colour is status:
         green is live, cyan has shipped and is public, yellow is private and
         named without a link.
       </Body>
@@ -194,7 +194,7 @@ export function WorkIndex({ onGo }: { onGo: (page: number) => void }) {
   )
 }
 
-/** P201-209 — one work per page. */
+/** P201-210 — one work per page. */
 export function WorkPage({ work, onGo }: { work: Work; onGo: (page: number) => void }) {
   const index = WORKS.findIndex((item) => item.page === work.page)
   const next = WORKS[(index + 1) % WORKS.length]
@@ -219,7 +219,10 @@ export function WorkPage({ work, onGo }: { work: Work; onGo: (page: number) => v
         }}
       >
         <Tag label={work.status} colour={statusColour(work.status)} />
-        <span style={{ color: TT.cyan, fontSize: 'var(--t-xs)' }}>{work.stack}</span>
+        {work.honour ? <Tag label={work.honour} colour="white" /> : null}
+        {/* The separator stays with the word before it, so a wrapped stack
+            never opens its second line with a dot. */}
+        <span style={{ color: TT.cyan, fontSize: 'var(--t-xs)' }}>{work.stack.replaceAll(' · ', '\u00a0· ')}</span>
       </div>
 
       <Body>{work.line}</Body>
